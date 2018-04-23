@@ -9,7 +9,7 @@ const HistoryVideos = (props) => {
             <div>
                   {props.props.map((video, index) =>{ 
                       
-                  return <SingleHistoryVideo props={video}  index={index}  historyClick = {props.historyVideo}   />
+                  return <SingleHistoryVideo props={video} key={index}  index={index}  historyClick = {props.historyVideo}   />
                   })}
             </div>
         )

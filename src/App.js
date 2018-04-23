@@ -6,6 +6,7 @@ import { videoService } from "../src/services/SingleVideoService"
 import Search from './app/singlevideo/Search'
 import VideoList from './app/singlevideo/VideoList'
 import HistoryVideos from './app/singlevideo/HistoryVideos'
+import Utils from './app/shares/Utils'
 
 class App extends Component {
   constructor(props) {
@@ -13,7 +14,7 @@ class App extends Component {
     this.state = {
       selectedVideo: null,
       videos: [],
-      defaultVideos: "pticji grip",
+      defaultVideos: "java",
       history: [],
 
     };
@@ -24,15 +25,18 @@ class App extends Component {
       .then(videos => this.setState({
         videos: videos,
         selectedVideo: videos[0],
-      
+
       })
-      
+
       ).then(() => {
         this.setState({
-          history:[this.state.selectedVideo]
+          history: [this.state.selectedVideo]
+
         })
-       
+
       })
+    
+
   }
 
 
@@ -50,12 +54,24 @@ class App extends Component {
   // select videos from side
 
   sideVideos = id => {
-    this.state.history.push(this.state.videos[id])
+   for(let i = 0; i < this.state.history.length; i++){
+     if(this.state.videos[id].title === this.state.history.title){
+       break;
+     }else{
+
+       this.state.history.push(this.state.videos[id])
+    }
+    break;
+  }
+     
+  console.log(this.state.history);
     this.setState({
       selectedVideo: this.state.videos[id],
     });
 
   }
+
+
 
   //watched videos
 
