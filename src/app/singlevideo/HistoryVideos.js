@@ -2,7 +2,7 @@ import React from 'react';
 
 import SingleHistoryVideo from './SingleHistoryVideo'
 const HistoryVideos = (props) => {
-    console.log(props.videos);
+    console.log(props.props);
 
     return (
         

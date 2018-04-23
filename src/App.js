@@ -2,91 +2,105 @@ import React, { Component, Fragment } from "react";
 import logo from './logo.svg';
 import './App.css';
 import MainPlayer from './app/singlevideo/MainPlayer'
-import {videoService} from "../src/services/SingleVideoService"
+import { videoService } from "../src/services/SingleVideoService"
 import Search from './app/singlevideo/Search'
 import VideoList from './app/singlevideo/VideoList'
 import HistoryVideos from './app/singlevideo/HistoryVideos'
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       selectedVideo: null,
       videos: [],
       defaultVideos: "pticji grip",
-      history:[],
-      
+      history: [],
+
     };
   }
 
-componentDidMount()  {
-videoService.fetchVideo(this.state.defaultVideos)
-.then(videos => this.setState({
-  videos:videos,
-  selectedVideo:videos[0]
-})
-)}
+  componentDidMount() {
+    videoService.fetchVideo(this.state.defaultVideos)
+      .then(videos => this.setState({
+        videos: videos,
+        selectedVideo: videos[0],
+      
+      })
+      
+      ).then(() => {
+        this.setState({
+          history:[this.state.selectedVideo]
+        })
+       
+      })
+  }
 
 
-//calback za search
+  //calback za search
 
-getSearchValue = (value) =>{
-  videoService.fetchVideo(value)
-  .then(videos => this.setState({
-    videos:videos,
-    selectedVideo:videos[0]
-  })
-)
-}
+  getSearchValue = (value) => {
+    videoService.fetchVideo(value)
+      .then(videos => this.setState({
+        videos: videos,
+        selectedVideo: videos[0]
+      })
+      )
+  }
 
-// select videos from side
+  // select videos from side
 
-sideVideos = id => { 
-  this.state.history.push(this.state.videos[id])
-  this.setState({
-    selectedVideo: this.state.videos[id],
-  });
-  
-}
-
-historyVideos = title => {
-  videoService.fetchVideo(title)
-  .then(videos => {
+  sideVideos = id => {
+    this.state.history.push(this.state.videos[id])
     this.setState({
-      selectedVideo: videos[0]
+      selectedVideo: this.state.videos[id],
     });
-  });
-  
-}
+
+  }
+
+  //watched videos
+
+  historyVideos = title => {
+    videoService.fetchVideo(title)
+      .then(videos => {
+        this.setState({
+          selectedVideo: videos[0]
+        });
+      });
+
+  }
 
   render() {
-   
-      if(this.state.videos.length === 0){
-       return <h1>Loading...</h1>
-      }
-      return (
+
+    if (this.state.videos.length === 0) {
+      return <h1>Loading...</h1>
+    }
+    return (
       <Fragment>
-        <Search props = {this.getSearchValue}/>
-      <div className="container">
-      <div className="row">
-        <div className="col m7">
-        {this.state.selectedVideo && (
-        <MainPlayer selectedVideo ={this.state.selectedVideo}/> )}
-    </div>
-    <div className="col m2 push-m3">
-              <VideoList props = {this.state.videos} selectSideVideo = {this.sideVideos} />
+        <Search props={this.getSearchValue} />
+        <div className="container">
+          <div className="row">
+            <div className="col m7">
+
+              {this.state.selectedVideo && (
+                <MainPlayer selectedVideo={this.state.selectedVideo} />)}
+
             </div>
-    </div>
-    <div className="row">
+
+            <div className="col m2 push-m3">
+              <VideoList props={this.state.videos} selectSideVideo={this.sideVideos} />
+            </div>
+
+          </div>
+          <div className="row">
             <h4> History </h4>
 
-              
-              <HistoryVideos props={this.state.history} historyVideo={this.historyVideos}/> 
-               
- 
+
+            <HistoryVideos props={this.state.history} historyVideo={this.historyVideos} />
+
+
           </div>
-    </div>
-    </Fragment>
+        </div>
+      </Fragment>
     );
   }
 }

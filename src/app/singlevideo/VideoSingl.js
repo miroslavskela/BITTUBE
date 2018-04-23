@@ -9,7 +9,7 @@ const getId = () => {
     return (
         
         <Fragment>
-        
+        <h6>{props.props.title}</h6>
         <img onClick={getId} width="100%" src={props.props.image} />
        
       </Fragment>
