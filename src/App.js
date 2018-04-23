@@ -1,19 +1,92 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from "react";
 import logo from './logo.svg';
 import './App.css';
-import Main from '/app/singlevideo/Main'
+import MainPlayer from './app/singlevideo/MainPlayer'
+import {videoService} from "../src/services/SingleVideoService"
+import Search from './app/singlevideo/Search'
+import VideoList from './app/singlevideo/VideoList'
+import HistoryVideos from './app/singlevideo/HistoryVideos'
 
 class App extends Component {
   constructor(props){
     super(props)
+    this.state = {
+      selectedVideo: null,
+      videos: [],
+      defaultVideos: "pticji grip",
+      history:[],
+      
+    };
   }
 
+componentDidMount()  {
+videoService.fetchVideo(this.state.defaultVideos)
+.then(videos => this.setState({
+  videos:videos,
+  selectedVideo:videos[0]
+})
+)}
 
 
+//calback za search
+
+getSearchValue = (value) =>{
+  videoService.fetchVideo(value)
+  .then(videos => this.setState({
+    videos:videos,
+    selectedVideo:videos[0]
+  })
+)
+}
+
+// select videos from side
+
+sideVideos = id => { 
+  this.state.history.push(this.state.videos[id])
+  this.setState({
+    selectedVideo: this.state.videos[id],
+  });
+  
+}
+
+historyVideos = title => {
+  videoService.fetchVideo(title)
+  .then(videos => {
+    this.setState({
+      selectedVideo: videos[0]
+    });
+  });
+  
+}
 
   render() {
-    return (
-    <Main/>
+   
+      if(this.state.videos.length === 0){
+       return <h1>Loading...</h1>
+      }
+      return (
+      <Fragment>
+        <Search props = {this.getSearchValue}/>
+      <div className="container">
+      <div className="row">
+        <div className="col m7">
+        {this.state.selectedVideo && (
+        <MainPlayer selectedVideo ={this.state.selectedVideo}/> )}
+    </div>
+    <div className="col m2 push-m3">
+              <VideoList props = {this.state.videos} selectSideVideo = {this.sideVideos} />
+            </div>
+    </div>
+    <div className="row">
+            <h4> History </h4>
+
+              
+              <HistoryVideos props={this.state.history} historyVideo={this.historyVideos}/> 
+               
+ 
+          </div>
+    </div>
+    </Fragment>
     );
   }
 }
