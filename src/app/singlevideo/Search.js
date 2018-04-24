@@ -18,6 +18,11 @@ handleChange = (event) => {
     this.props.props(event.target.value)
 }
 
+clearHistory = () => {
+localStorage.clear()
+window.location.reload()
+}
+
     render() {
         return (
             <Fragment>
@@ -38,6 +43,7 @@ handleChange = (event) => {
                                 <i className="material-icons">close</i>
                             </div>
                         </form>
+                        <a className="waves-effect waves-light btn" onClick = {this.clearHistory}>clear history</a>
                     </div>
                 </nav>
             </Fragment>

@@ -1,18 +1,36 @@
-import React from 'react';
+import React, { Component, Fragment } from "react";
 
 import SingleHistoryVideo from './SingleHistoryVideo'
-const HistoryVideos = (props) => {
-    console.log(props.props);
-
+const history = localStorage.getItem('history')
+class HistoryVideos extends Component  {
+    constructor(props){
+        super(props)
+        this.state = {
+            history:this.props.props
+        }
+        
+    }
+    
+    
+    
+    componentWillReceiveProps(props){
+        
+        this.setState({
+            history:this.props.props
+        })
+    }
+   
+render(){
     return (
         
             <div>
-                  {props.props.map((video, index) =>{ 
+                  {this.state.history.map((video, index) =>{ 
                       
-                  return <SingleHistoryVideo props={video} key={index}  index={index}  historyClick = {props.historyVideo}   />
+                  return <SingleHistoryVideo props={video} key={index}  index={index}  historyClick = {this.props.historyVideo}   />
                   })}
             </div>
         )
+    }
     
 }
 

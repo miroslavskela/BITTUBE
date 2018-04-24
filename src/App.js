@@ -7,72 +7,90 @@ import Search from './app/singlevideo/Search'
 import VideoList from './app/singlevideo/VideoList'
 import HistoryVideos from './app/singlevideo/HistoryVideos'
 import Utils from './app/shares/Utils'
+import debounce from 'lodash/debounce'
 
 
 const history = localStorage.getItem('history')
 class App extends Component {
   constructor(props) {
     super(props)
-    if(history){
-    this.state = {
-      selectedVideo: null,
-      videos: [],
-      defaultVideos: "java",
-      history: JSON.parse(history),
-      
-    };
-  }else{
-    this.state = {
-      selectedVideo: null,
-      videos: [],
-      defaultVideos: "java",
-      history: [], 
-    };
-  }
-  console.log(this.state.history);
+    if (history) {
+      this.state = {
+        selectedVideo: null,
+        videos: [],
+        defaultVideos: "java",
+        history: JSON.parse(history),
+
+      };
+    } else {
+      this.state = {
+        selectedVideo: null,
+        videos: [],
+        defaultVideos: "java",
+        history: [],
+      };
+    }
+    
+
   }
   componentDidMount() {
     videoService.fetchVideo(this.state.defaultVideos)
-    .then(videos => this.setState({
-      videos: videos,
-      selectedVideo: videos[0],
+      .then(videos => this.setState({
+        videos: videos,
+        selectedVideo: videos[0],
+      })
+      ).then(() => {
+        if (history) {
+          this.setState({
+            history: JSON.parse(history)
+
+          })
+        } else {
+          this.setState({
+            history: [this.state.selectedVideo]
+
+          })
+        }
+      }).then(() => {
+        localStorage.setItem('history', JSON.stringify(this.state.history))
       
-    })
-    
-  ).then(() => {
-    if(history){
-      this.setState({
-        history: JSON.parse(history) 
-        
       })
-    }else{
-      this.setState({
-        history: [this.state.selectedVideo] 
-        
-      })
-     
+
+
   }
-    
-    
-  }).then(() => {
-    localStorage.setItem('history', JSON.stringify(this.state.history))
-    console.log("Miroslav");
-  })
-  
-  
-}
- 
+
 
 
   //calback za search
 
-  getSearchValue = (value) => {
+  getSearchValue = debounce(((value) => {
     videoService.fetchVideo(value)
       .then(videos => this.setState({
         videos: videos,
         selectedVideo: videos[0]
       })
-      )
+      ).then(() => {
+        if (Utils.checkArray(this.state.history, this.state.videos[0])) {
+          console.log(Utils.checkArray(this.state.history, this.state.videos[0]));
+        } else {
+          this.state.history.push(this.state.videos[0])
+          localStorage.setItem('history', JSON.stringify(this.state.history))
+        }
+      }).then(() => {
+
+        this.setStateFromStorage()
+      })
+     
+      
+  }), 2000)
+
+
+  setStateFromStorage = () => {
+   const history1 = localStorage.getItem('history')
+    this.setState({
+      history:JSON.parse(history1)
+    })
+    
   }
 
   // select videos from side
@@ -83,14 +101,15 @@ class App extends Component {
     });
 
     if (Utils.checkArray(this.state.history, this.state.videos[id])) {
-        console.log(Utils.checkArray(this.state.history, this.state.videos[id]));
-    }   else {
-             this.state.history.push(this.state.videos[id])
-             localStorage.setItem('history', JSON.stringify(this.state.history))
+      console.log(Utils.checkArray(this.state.history, this.state.videos[id]));
+    } else {
+      this.state.history.push(this.state.videos[id])
+      localStorage.setItem('history', JSON.stringify(this.state.history))
     }
 
   }
 
+ 
 
 
   //watched videos
@@ -132,7 +151,7 @@ class App extends Component {
           <div className="row">
             <h4> History </h4>
 
-
+                
             <HistoryVideos props={this.state.history} historyVideo={this.historyVideos} />
 
 
