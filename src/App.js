@@ -8,36 +8,60 @@ import VideoList from './app/singlevideo/VideoList'
 import HistoryVideos from './app/singlevideo/HistoryVideos'
 import Utils from './app/shares/Utils'
 
+
+const history = localStorage.getItem('history')
 class App extends Component {
   constructor(props) {
     super(props)
+    if(history){
     this.state = {
       selectedVideo: null,
       videos: [],
       defaultVideos: "java",
-      history: [],
-
+      history: JSON.parse(history),
+      
+    };
+  }else{
+    this.state = {
+      selectedVideo: null,
+      videos: [],
+      defaultVideos: "java",
+      history: [], 
     };
   }
-
+  console.log(this.state.history);
+  }
   componentDidMount() {
     videoService.fetchVideo(this.state.defaultVideos)
-      .then(videos => this.setState({
-        videos: videos,
-        selectedVideo: videos[0],
-
-      })
-
-      ).then(() => {
-        this.setState({
-          history: [this.state.selectedVideo]
-
-        })
-
-      })
+    .then(videos => this.setState({
+      videos: videos,
+      selectedVideo: videos[0],
+      
+    })
     
-
+  ).then(() => {
+    if(history){
+      this.setState({
+        history: JSON.parse(history) 
+        
+      })
+    }else{
+      this.setState({
+        history: [this.state.selectedVideo] 
+        
+      })
+     
   }
+    
+    
+  }).then(() => {
+    localStorage.setItem('history', JSON.stringify(this.state.history))
+    console.log("Miroslav");
+  })
+  
+  
+}
+ 
 
 
   //calback za search
@@ -54,20 +78,16 @@ class App extends Component {
   // select videos from side
 
   sideVideos = id => {
-   for(let i = 0; i < this.state.history.length; i++){
-     if(this.state.videos[id].title === this.state.history.title){
-       break;
-     }else{
-
-       this.state.history.push(this.state.videos[id])
-    }
-    break;
-  }
-     
-  console.log(this.state.history);
     this.setState({
       selectedVideo: this.state.videos[id],
     });
+
+    if (Utils.checkArray(this.state.history, this.state.videos[id])) {
+        console.log(Utils.checkArray(this.state.history, this.state.videos[id]));
+    }   else {
+             this.state.history.push(this.state.videos[id])
+             localStorage.setItem('history', JSON.stringify(this.state.history))
+    }
 
   }
 
@@ -84,6 +104,8 @@ class App extends Component {
       });
 
   }
+
+
 
   render() {
 
