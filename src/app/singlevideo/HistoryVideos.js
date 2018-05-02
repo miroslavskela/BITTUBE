@@ -8,11 +8,12 @@ class HistoryVideos extends Component  {
         this.state = {
             history:this.props.props
         }
-        
+        console.log(this.props);
     }
     
+   
     
-    
+   
     componentWillReceiveProps(props){
         
         this.setState({

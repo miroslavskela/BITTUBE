@@ -30,7 +30,7 @@ class App extends Component {
         history: [],
       };
     }
-    
+
 
   }
   componentDidMount() {
@@ -38,8 +38,7 @@ class App extends Component {
       .then(videos => this.setState({
         videos: videos,
         selectedVideo: videos[0],
-      })
-      ).then(() => {
+      })).then(() => {
         if (history) {
           this.setState({
             history: JSON.parse(history)
@@ -53,7 +52,7 @@ class App extends Component {
         }
       }).then(() => {
         localStorage.setItem('history', JSON.stringify(this.state.history))
-      
+
       })
 
 
@@ -80,17 +79,17 @@ class App extends Component {
 
         this.setStateFromStorage()
       })
-     
-      
+
+
   }), 2000)
 
 
   setStateFromStorage = () => {
-   const history1 = localStorage.getItem('history')
+    const history1 = localStorage.getItem('history')
     this.setState({
-      history:JSON.parse(history1)
+      history: JSON.parse(history1)
     })
-    
+
   }
 
   // select videos from side
@@ -101,15 +100,15 @@ class App extends Component {
     });
 
     if (Utils.checkArray(this.state.history, this.state.videos[id])) {
-      console.log(Utils.checkArray(this.state.history, this.state.videos[id]));
+             console.log(Utils.checkArray(this.state.history, this.state.videos[id]));
     } else {
-      this.state.history.push(this.state.videos[id])
-      localStorage.setItem('history', JSON.stringify(this.state.history))
+             this.state.history.push(this.state.videos[id])
+             localStorage.setItem('history', JSON.stringify(this.state.history))
     }
 
   }
 
- 
+
 
 
   //watched videos
@@ -128,7 +127,7 @@ class App extends Component {
 
   render() {
 
-    if (this.state.videos.length === 0) {
+    if (this.state.videos.length === 0||this.state.history.length === 0 ) {
       return <h1>Loading...</h1>
     }
     return (
@@ -151,7 +150,7 @@ class App extends Component {
           <div className="row">
             <h4> History </h4>
 
-                
+
             <HistoryVideos props={this.state.history} historyVideo={this.historyVideos} />
 
 

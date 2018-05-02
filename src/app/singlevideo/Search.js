@@ -27,7 +27,7 @@ window.location.reload()
         return (
             <Fragment>
                 <nav>
-                    <div className="nav-wrapper">
+                    <div className="nav-wrapper  teal lighten-2">
                         <form>
                             <div className="input-field">
                                 <input
